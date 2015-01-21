@@ -26,8 +26,7 @@ useradd -m hduser
 
 # Step 4: Create the HDFS system directories
 su hdfs -c "hadoop fs -mkdir /var"
-su hdfs -c "hadoop fs -mkdir /var/lib"echo "Starting ssh daemon..."
-
+su hdfs -c "hadoop fs -mkdir /var/lib"
 su hdfs -c "hadoop fs -mkdir /var/lib/hadoop-hdfs"
 su hdfs -c "hadoop fs -mkdir /var/lib/hadoop-hdfs/cache"
 su hdfs -c "hadoop fs -mkdir /var/lib/hadoop-hdfs/cache/mapred"
