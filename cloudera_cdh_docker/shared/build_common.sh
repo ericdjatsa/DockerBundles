@@ -69,7 +69,7 @@ fi
 
 # COMMAND FOR BUILDING THE DOCKER IMAGE
 
-tar -czh . | docker build -t $tag -
+tar -ch . | docker build -t $tag -
 
 #excerpt from tar man page
 

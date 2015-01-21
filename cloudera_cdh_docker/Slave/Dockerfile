@@ -7,8 +7,8 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-COPY proxy.sh /opt/docker_common_scripts/0_proxy.sh
-COPY nsupdate.sh /opt/docker_common_scripts/1_nsupdate.sh
+COPY shared/proxy.sh /opt/docker_common_scripts/0_proxy.sh
+COPY shared/nsupdate.sh /opt/docker_common_scripts/1_nsupdate.sh
 
 # TODO : below command fails with error : 
 # /bin/sh: 1: /opt/docker_common_scripts/0_proxy.sh: Permission denied
@@ -35,13 +35,16 @@ RUN apt-get update
 
 RUN apt-get install -q -y --force-yes hadoop-yarn-nodemanager hadoop-hdfs-datanode hadoop-mapreduce hadoop-client
 
-COPY core-site.xml /etc/hadoop/conf.empty/
-COPY yarn-site.xml /etc/hadoop/conf.empty/
-COPY mapred-site.xml /etc/hadoop/conf.empty/
-COPY hdfs-site.xml /etc/hadoop/conf.empty/
+COPY shared/core-site.xml /etc/hadoop/conf.empty/
+COPY shared/yarn-site.xml /etc/hadoop/conf.empty/
+COPY shared/mapred-site.xml /etc/hadoop/conf.empty/
+COPY shared/hdfs-site.xml /etc/hadoop/conf.empty/
+
+# Create data dir ( as specified in hdfs-site.xml )
+RUN su hdfs -c "mkdir -p /var/lib/hadoop-hdfs/hdfs/data"
 
 # Install oozie client
-RUN apt-get install -y --force-yes oozie-client
+##RUN apt-get install -y --force-yes oozie-client
 
 EXPOSE 7180 7183 7182 7432 50020 50070 50010 50075 8040 8042 47314 13562 8030 8031 46664 57299 53686 50176 38904
 
