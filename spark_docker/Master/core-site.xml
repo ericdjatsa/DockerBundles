@@ -1,0 +1,6 @@
+<configuration>
+  <property>
+      <name>fs.defaultFS</name>
+      <value>hdfs://master.example.com:8020</value>
+  </property>
+</configuration>

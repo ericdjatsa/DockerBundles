@@ -1,0 +1,39 @@
+Things to fix
+
+mkdir: Permission denied: user=root, access=WRITE, inode="/user":hdfs:supergroup:drwxr-xr-x
+Error: Could not find or load main class hadoop
+
+
+
+Error: User: oozie is not allowed to impersonate oozie
+
+Stack trace for the error was (for debug purposes):
+--------------------------------------
+org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.authorize.AuthorizationException): User: oozie is not allowed to impersonate oozie
+        at org.apache.hadoop.ipc.Client.call(Client.java:1411)
+        at org.apache.hadoop.ipc.Client.call(Client.java:1364)
+        at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:206)
+        at com.sun.proxy.$Proxy9.getFileInfo(Unknown Source)
+        at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.getFileInfo(ClientNamenodeProtocolTranslatorPB.java:744)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:606)
+        at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:187)
+        at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:102)
+        at com.sun.proxy.$Proxy10.getFileInfo(Unknown Source)
+        at org.apache.hadoop.hdfs.DFSClient.getFileInfo(DFSClient.java:1921)
+        at org.apache.hadoop.hdfs.DistributedFileSystem$17.doCall(DistributedFileSystem.java:1089)
+        at org.apache.hadoop.hdfs.DistributedFileSystem$17.doCall(DistributedFileSystem.java:1085)
+        at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+        at org.apache.hadoop.hdfs.DistributedFileSystem.getFileStatus(DistributedFileSystem.java:1085)
+        at org.apache.hadoop.fs.FileSystem.exists(FileSystem.java:1400)
+        at org.apache.hadoop.fs.FileUtil.checkDest(FileUtil.java:496)
+        at org.apache.hadoop.fs.FileUtil.copy(FileUtil.java:348)
+        at org.apache.hadoop.fs.FileUtil.copy(FileUtil.java:338)
+        at org.apache.hadoop.fs.FileSystem.copyFromLocalFile(FileSystem.java:1905)
+        at org.apache.hadoop.fs.FileSystem.copyFromLocalFile(FileSystem.java:1873)
+        at org.apache.oozie.tools.OozieSharelibCLI.run(OozieSharelibCLI.java:165)
+        at org.apache.oozie.tools.OozieSharelibCLI.main(OozieSharelibCLI.java:56)
+--------------------------------------
+

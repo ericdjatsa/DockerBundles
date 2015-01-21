@@ -1,0 +1,28 @@
+ADD file:f6dac5d0f381ae4a91fba63bc6b1a2a4b46aaa999317d302aa89655658a3bde4 in /
+RUN echo '#!/bin/sh' > /usr/sbin/policy-rc.d    && echo 'exit 101' >> /usr/sbin/policy-rc.d     && chmod +x /usr/sbin/policy-rc.d               && dpkg-divert --local --rename --add /sbin/initctl     && cp -a /usr/sbin/policy-rc.d /sbin/initctl         && sed -i 's/^exit.*/exit 0/' /sbin/initctl             && echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/docker-apt-speedup             && echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' > /etc/apt/apt.conf.d/docker-clean        && echo 'APT::Update::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' >> /etc/apt/apt.conf.d/docker-clean        && echo 'Dir::Cache::pkgcache ""; Dir::Cache::srcpkgcache "";' >> /etc/apt/apt.conf.d/docker-clean              && echo 'Acquire::Languages "none";' > /etc/apt/apt.conf.d/docker-no-languages               && echo 'Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";' > /etc/apt/apt.conf.d/docker-gzip-indexes
+RUN rm -rf /var/lib/apt/lists/*
+RUN sed -i 's/^#\s*\(deb.*universe\)$/\1/g' /etc/apt/sources.list
+RUN apt-get update && apt-get dist-upgrade -y && rm -rf /var/lib/apt/lists/*
+CMD [/bin/bash]
+ENV DEBIAN_FRONTEND=noninteractive
+RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+ADD file:427bd532c071f7a8dc8bf19972a2fc6a45126e0006b261daf87a285f575f62e8 in /opt/docker_common_scripts/0_proxy.sh
+RUN /opt/docker_common_scripts/0_proxy.sh
+RUN apt-get update && apt-get -y upgrade
+RUN apt-get install -q -y --force-yes wget curl inetutils-ping telnet git net-tools vim htop apt-utils
+RUN apt-get install -q -y --force-yes bind9 dnsutils bind9utils
+ADD multi:334ef8b3549d17dfea705c3f2f6598a1cb05e5672af09c739b87e4123e9cdac0 in /etc/bind/
+ADD file:235c45a76e73a914ebce4cc0f07c256da3c594bd0999a3f1c59469bb0b34cb1b in /etc/bind/
+ADD file:a3070d28deaf9cc7eb840e74177c21108ee9ce58a32f6056891bf2841b369b1a in /etc/bind/
+EXPOSE map[53/tcp:{}]
+RUN apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+RUN echo 'root:root' |chpasswd
+RUN ln -s /var/lib/bind /etc/bind/zones
+RUN cd /etc/bind && dnssec-keygen -a HMAC-MD5 -b 128 -n HOST example.com.
+ADD file:9f83031382359037f33f739621dc63561ec25ffadfd29f2448101a4ff9d95813 in /etc/bind/
+RUN /etc/bind/configurebind9.sh
+RUN chmod -R 640 /etc/bind/Kexample.com*
+ADD file:f823f7722ec50d384c75bea71b69fddfb401431779d648ce7098b41f0a6f9e00 in /opt/docker_common_scripts/nsupdate.sh
+ADD file:ee40438baee9b0fc1cc465612c9b2f32075087facb622867fc9f61c800118755 in /opt/
+CMD [/opt/startup.sh]

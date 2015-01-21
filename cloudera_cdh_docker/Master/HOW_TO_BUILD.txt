@@ -1,0 +1,16 @@
+In order to build the container image, run the following command from the directory containing the DockerFile
+
+> ./shared/build_common.sh -t <tag to assign to built container> 
+
+Example : 
+
+> cd ~/Cloudera_Spark_Docker/cloudera_docker/Master/
+> ls -1
+Dockerfile
+Dockerfile_without_Oozie
+HOW_TO_BUILD.txt
+Libs
+shared
+startup.sh
+
+> ./shared/build_common.sh -t eric:hadoopmaster:v1
