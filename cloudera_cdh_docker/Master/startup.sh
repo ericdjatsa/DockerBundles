@@ -76,7 +76,7 @@ fi
 
 # Start oozie server
 ## Debug for the moment we do not start Oozie
-#su -c "service oozie start" 
+su -c "service oozie start" 
 #By default, Oozie server runs on port 11000 and its URL is http://<OOZIE_HOSTNAME>:11000/oozie
 
 #Set OOZIE_URL parameter

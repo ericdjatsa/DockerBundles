@@ -1,6 +1,6 @@
-FROM pti1/hadoopslave:secondversion
+FROM eric/hadoopmaster:v1
 
-MAINTAINER PTI PTI, pti@coco.fr
+MAINTAINER Eric Djatsa, djatsaedy@gmail.com
 
 #
 # Add necessary repos for installation
@@ -13,7 +13,7 @@ ADD nsupdate.sh /opt/docker_common_scripts/1_proxy.sh
 RUN /opt/docker_common_scripts/0_proxy.sh
 
 RUN apt-get update 
-RUN apt-get install -q -y --force-yes spark-core spark-master spark-worker spark-history-server spark-python
+RUN apt-get install -q -y --force-yes spark-core spark-worker spark-python
 RUN apt-get install -q -y --force-yes scala
 
 # Install oozie

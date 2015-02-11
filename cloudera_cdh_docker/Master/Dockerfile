@@ -60,18 +60,18 @@ RUN chmod -R 1777 /etc/hadoop/conf.empty/
 
 # Install Oozie server
 # Instructions here : http://www.cloudera.com/content/cloudera/en/documentation/core/v5-2-x/topics/cdh_ig_oozie_installation.html
-#RUN apt-get install -y --force-yes oozie
+RUN apt-get install -y --force-yes oozie
 
 # Install oozie client
-#RUN apt-get install -y --force-yes oozie-client
+RUN apt-get install -y --force-yes oozie-client
 
 # Configure which hadoop version to use in Oozie ( Yarn or MR1 : in our case we use Yarn )
-#RUN su -c " update-alternatives --set oozie-tomcat-conf /etc/oozie/tomcat-conf.http"
+RUN su -c " update-alternatives --set oozie-tomcat-conf /etc/oozie/tomcat-conf.http"
 
 # Configure Oozie webconsole ( copy web console libs ) 
-#RUN mkdir /var/lib/oozie/
-##COPY Libs/ext-2.2.zip /var/lib/oozie/
-##RUN cd /var/lib/oozie && unzip /var/lib/oozie/ext-2.2.zip
+RUN mkdir /var/lib/oozie/
+COPY Libs/ext-2.2.zip /var/lib/oozie/
+RUN cd /var/lib/oozie && unzip /var/lib/oozie/ext-2.2.zip && chmod -R 1777 /var/lib/oozie
 
 # Set Oozie web console URL
 ENV OOZIE_URL http://localhost:11000/oozie

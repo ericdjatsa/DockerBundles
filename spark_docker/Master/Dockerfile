@@ -1,6 +1,6 @@
-FROM pti1/hadoopmaster:v3
+FROM eric/hadoopmaster:v1
 
-MAINTAINER PTI PTI, pti@coco.fr
+MAINTAINER Eric Djatsa, djatsaedy@gmail.com
 
 #
 # Add necessary repos for installation
