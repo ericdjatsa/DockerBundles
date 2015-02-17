@@ -44,7 +44,7 @@ COPY shared/hdfs-site.xml /etc/hadoop/conf.empty/
 RUN su hdfs -c "mkdir -p /var/lib/hadoop-hdfs/hdfs/data"
 
 # Install oozie client
-##RUN apt-get install -y --force-yes oozie-client
+RUN apt-get install -y --force-yes oozie-client
 
 EXPOSE 7180 7183 7182 7432 50020 50070 50010 50075 8040 8042 47314 13562 8030 8031 46664 57299 53686 50176 38904
 

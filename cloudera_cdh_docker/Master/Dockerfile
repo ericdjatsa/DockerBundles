@@ -21,8 +21,14 @@ COPY shared/nsupdate.sh /opt/docker_common_scripts/1_proxy.sh
 # /bin/sh: 1: /opt/docker_common_scripts/0_proxy.sh: Permission denied
 #RUN /opt/docker_common_scripts/0_proxy.sh
 
-RUN apt-get update 
-RUN apt-get install -q -y --force-yes wget curl inetutils-ping telnet net-tools vim htop dnsutils apt-utils unzip ruby
+RUN apt-get update && apt-get install -q -y --force-yes \
+	wget \
+	curl \
+	inetutils-ping \
+	telnet net-tools \
+	vim htop dnsutils \
+	apt-utils unzip \
+	ruby
 
 
 # install java
@@ -45,10 +51,12 @@ RUN curl http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh/cloudera.list
 RUN curl http://archive.cloudera.com/cm5/ubuntu/precise/amd64/cm/archive.key | apt-key add -
 RUN curl http://archive.cloudera.com/cm5/ubuntu/precise/amd64/cm/cloudera.list > /etc/apt/sources.list.d/cloudera-manager.list
 
-RUN apt-get update
-
-RUN apt-get install -q -y --force-yes hadoop-yarn-resourcemanager hadoop-hdfs-namenode 
-RUN apt-get install -q -y --force-yes hadoop-yarn-nodemanager hadoop-hdfs-datanode hadoop-mapreduce 
+RUN apt-get update && apt-get install -q -y --force-yes \
+	hadoop-yarn-resourcemanager \
+	hadoop-hdfs-namenode \
+	hadoop-yarn-nodemanager \
+	hadoop-hdfs-datanode \
+	hadoop-mapreduce
 
 COPY shared/core-site.xml /etc/hadoop/conf.empty/
 COPY shared/yarn-site.xml /etc/hadoop/conf.empty/
@@ -58,38 +66,44 @@ COPY shared/hdfs-site.xml /etc/hadoop/conf.empty/
 # TODO : Assign correct permissions to the hadoop conf directory
 RUN chmod -R 1777 /etc/hadoop/conf.empty/
 
-# Install Oozie server
-# Instructions here : http://www.cloudera.com/content/cloudera/en/documentation/core/v5-2-x/topics/cdh_ig_oozie_installation.html
-RUN apt-get install -y --force-yes oozie
-
-# Install oozie client
-RUN apt-get install -y --force-yes oozie-client
-
-# Configure which hadoop version to use in Oozie ( Yarn or MR1 : in our case we use Yarn )
-RUN su -c " update-alternatives --set oozie-tomcat-conf /etc/oozie/tomcat-conf.http"
-
-# Configure Oozie webconsole ( copy web console libs ) 
-RUN mkdir /var/lib/oozie/
-COPY Libs/ext-2.2.zip /var/lib/oozie/
-RUN cd /var/lib/oozie && unzip /var/lib/oozie/ext-2.2.zip && chmod -R 1777 /var/lib/oozie
-
-# Set Oozie web console URL
-ENV OOZIE_URL http://localhost:11000/oozie
-
 # Create name dir ( as specified in hdfs-site.xml )
 RUN su hdfs -c "mkdir -p /var/lib/hadoop-hdfs/hdfs/name"
 
 # Format HDFS (NB : this operation should be performed as user hdfs)
 RUN su hdfs -c "hdfs namenode -format"
 
-# TODO : After formatting hdfs, assign correct permissions to namenode directory
-#RUN chmod -R 1777 /var/lib/hadoop-hdfs/cache/hdfs/dfs/name
+# Install Oozie server and oozie client
+# Instructions here : http://www.cloudera.com/content/cloudera/en/documentation/core/v5-2-x/topics/cdh_ig_oozie_installation.html
+RUN apt-get install -y --force-yes \
+	oozie \
+	oozie-client \
+	postgresql=9.4 \
+	postgresql-contrib=9.4
+
+# Configure which hadoop version to use in Oozie ( Yarn or MR1 : in our case we use Yarn )
+RUN su -c " update-alternatives --set oozie-tomcat-conf /etc/oozie/tomcat-conf.http"
+
+# Configure Oozie webconsole ( copy web console libs ) 
+RUN mkdir -p /var/lib/oozie/
+COPY Libs/ext-2.2.zip /var/lib/oozie/
+RUN cd /var/lib/oozie && unzip /var/lib/oozie/ext-2.2.zip && chmod -R 1777 /var/lib/oozie
+
+# Set Oozie web console URL
+ENV OOZIE_URL http://localhost:11000/oozie
+
+# Create oozie database
+RUN psql -d pg_default -a -f create_oozie_db.sql
+
+# TODO
+RUN echo "host    oozie         oozie         0.0.0.0/0             md5" >> data/pg_hba.conf  
+
 
 EXPOSE 7180 7183 7182 7432 50020 50070 50010 50075 8040 8042 47314 13562 8030 8031 46664 57299 53686 50176 38904
 EXPOSE 1004 1006 8020 50470 50090 50495 8485 8480 8032 8033 8088 8041 10020 19888 22 9160 9042
 # Expose Oozie port
 EXPOSE 11000
 
+RUN echo "Adding startup.sh"
 COPY startup.sh /opt/
 
 RUN chmod +x /opt/startup.sh

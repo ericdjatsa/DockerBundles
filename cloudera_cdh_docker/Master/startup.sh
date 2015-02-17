@@ -7,10 +7,7 @@
 cd /opt/docker_common_scripts/
 for f in *.sh; do . ./$f & done
 
-
 # Start Hadoop services
-# TODO : see how to limit permissions to hdfs, yarn, ... ( all relevant ) users
-su hdfs -c "hadoop fs -chmod -R 1777 /var/lib/hadoop-hdfs"
 
 for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do service $x start ; done
 for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do service $x start ; done
@@ -20,6 +17,7 @@ until hadoop fs -ls /; do
   echo " [ `basename $0` ] hadoop not yet up..."
   sleep 2
 done
+
 
 echo "create hduser user"
 useradd -m hduser
@@ -65,22 +63,24 @@ echo "node manager ui:http://$ipaddress:8042"
 echo "yarn resource manager ui:http://$ipaddress:8088"
 
 
+# Temp debug
+echo "Starting ssh daemon ..."
+/usr/sbin/sshd -D
+
 # Install Oozie shared Libs
 
-if [ ! -d "/user/oozie" ];then
-  su hdfs -c "hadoop fs -mkdir -p /user/oozie"
-  su hdfs -c "hadoop fs -chown oozie:oozie /user/oozie"
-  su hdfs -c "oozie-setup sharelib create -fs hdfs://master.example.com:8020 -locallib /usr/lib/oozie/oozie-sharelib-yarn.tar.gz"
-fi
+su hdfs -c "hadoop fs -mkdir -p /user/oozie"
+su hdfs -c "hadoop fs -chown oozie:oozie /user/oozie"
+su -c "oozie-setup sharelib create -fs hdfs://master.example.com:8020 -locallib /usr/lib/oozie/oozie-sharelib-yarn.tar.gz"
+
 
 
 # Start oozie server
-## Debug for the moment we do not start Oozie
-su -c "service oozie start" 
+#su -c "service oozie start" 
 #By default, Oozie server runs on port 11000 and its URL is http://<OOZIE_HOSTNAME>:11000/oozie
 
 #Set OOZIE_URL parameter
-export OOZIE_URL=http://localhost:11000/oozie
+#export OOZIE_URL=http://localhost:11000/oozie
 
-echo "Handling over to ssh daemon..."
-/usr/sbin/sshd -D
+#echo "Handling over to ssh daemon..."
+#/usr/sbin/sshd -D

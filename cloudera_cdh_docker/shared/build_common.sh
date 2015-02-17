@@ -7,7 +7,7 @@ function usage {
 	echo "Usage : "
 	echo "$_this_script_name -t <tag to assign to built container>"
 	echo "Example : "
-	echo "$_this_script_name -t eric:hadoopmaster:v1"
+	echo "$_this_script_name -t eric/hadoopmaster:v1"
 }
 
 EXPECTED_NUM_INPUT_PARAMS=1
