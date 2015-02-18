@@ -77,8 +77,8 @@ RUN su hdfs -c "hdfs namenode -format"
 RUN apt-get install -y --force-yes \
 	oozie \
 	oozie-client \
-	postgresql=9.4 \
-	postgresql-contrib=9.4
+	postgresql=9.1+129ubuntu1 \
+	postgresql-contrib=9.1+129ubuntu1
 
 # Configure which hadoop version to use in Oozie ( Yarn or MR1 : in our case we use Yarn )
 RUN su -c " update-alternatives --set oozie-tomcat-conf /etc/oozie/tomcat-conf.http"
