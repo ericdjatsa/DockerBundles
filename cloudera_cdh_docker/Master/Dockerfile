@@ -12,6 +12,8 @@ ENV DEBIAN_FRONTEND noninteractive
 # See http://monkinetic.com/2014/07/25/docker-openstack-policy-rcd-mysqld
 RUN echo "#!/bin/sh" > /usr/sbin/policy-rc.d && echo "exit 0" >> /usr/sbin/policy-rc.d
 
+RUN apt-get update && apt-get install debconf-utils
+
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 COPY shared/proxy.sh /opt/docker_common_scripts/0_proxy.sh
@@ -21,14 +23,17 @@ COPY shared/nsupdate.sh /opt/docker_common_scripts/1_proxy.sh
 # /bin/sh: 1: /opt/docker_common_scripts/0_proxy.sh: Permission denied
 #RUN /opt/docker_common_scripts/0_proxy.sh
 
-RUN apt-get update && apt-get install -q -y --force-yes \
-	wget \
+RUN apt-get install -q -y --force-yes \
+	apt-utils \
 	curl \
+	dnsutils \
+	htop \
 	inetutils-ping \
-	telnet net-tools \
-	vim htop dnsutils \
-	apt-utils unzip \
-	ruby
+	net-tools \
+	telnet \
+	unzip \
+	vim \
+	wget 
 
 
 # install java
@@ -73,6 +78,7 @@ RUN su hdfs -c "mkdir -p /var/lib/hadoop-hdfs/hdfs/name"
 RUN su hdfs -c "hdfs namenode -format"
 
 # Install Oozie server and oozie client
+# Also install PostreSQL to be used as Oozie DB
 # Instructions here : http://www.cloudera.com/content/cloudera/en/documentation/core/v5-2-x/topics/cdh_ig_oozie_installation.html
 RUN apt-get install -y --force-yes \
 	oozie \
@@ -80,8 +86,19 @@ RUN apt-get install -y --force-yes \
 	postgresql=9.1+129ubuntu1 \
 	postgresql-contrib=9.1+129ubuntu1
 
+
+# Copy oozie db creation script
+COPY shared/create_oozie_db.sql /opt/create_oozie_db.sql
+
+# Start postgres server and create oozie database
+
+RUN su postgres -c "/etc/init.d/postgresql start && psql -a -f /opt/create_oozie_db.sql"
+
 # Configure which hadoop version to use in Oozie ( Yarn or MR1 : in our case we use Yarn )
 RUN su -c " update-alternatives --set oozie-tomcat-conf /etc/oozie/tomcat-conf.http"
+
+# Copy oozie-site.xml to Oozie conf dir
+COPY shared/oozie-site.xml /etc/oozie/conf/
 
 # Configure Oozie webconsole ( copy web console libs ) 
 RUN mkdir -p /var/lib/oozie/
@@ -89,13 +106,19 @@ COPY Libs/ext-2.2.zip /var/lib/oozie/
 RUN cd /var/lib/oozie && unzip /var/lib/oozie/ext-2.2.zip && chmod -R 1777 /var/lib/oozie
 
 # Set Oozie web console URL
-ENV OOZIE_URL http://localhost:11000/oozie
+ENV OOZIE_URL http://master.example.com:11000/oozie
 
-# Create oozie database
-RUN psql -d pg_default -a -f create_oozie_db.sql
+# Configure Postgres to accept network connections for user oozie .
+RUN echo "host    oozie         oozie         0.0.0.0/0             md5" >> /etc/postgresql/9.1/main/pg_hba.conf
 
-# TODO
-RUN echo "host    oozie         oozie         0.0.0.0/0             md5" >> data/pg_hba.conf  
+# Set a shell for the oozie user so that he can execute commands
+RUN chsh -s /bin/sh oozie
+
+# Reload the Postgres configuration.
+# Usage: /usr/bin/pg_ctlcluster <version> <cluster> <action>
+
+# Then create the oozie DB Schema (NB : we need to perform this operation as oozie user)
+RUN su postgres -c "pg_ctlcluster 9.1 main restart " &&  su oozie -c "/usr/lib/oozie/bin/ooziedb.sh create -run" 
 
 
 EXPOSE 7180 7183 7182 7432 50020 50070 50010 50075 8040 8042 47314 13562 8030 8031 46664 57299 53686 50176 38904

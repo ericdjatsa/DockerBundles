@@ -19,6 +19,10 @@ RUN apt-get update &&  apt-get install -y --force-yes \
 	postgresql=9.1+129ubuntu1 \
 	postgresql-contrib=9.1+129ubuntu1
 
+# Start postgres server
+RUN su postgres -c "/etc/init.d/postgresql start"
+RUN su postgres -c " psql postgres"
+
 COPY startup.sh /opt/
 
 RUN chmod +x /opt/startup.sh
