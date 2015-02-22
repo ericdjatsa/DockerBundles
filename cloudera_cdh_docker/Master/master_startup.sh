@@ -9,8 +9,8 @@ for f in *.sh; do . ./$f & done
 
 # Start Hadoop services
 
-#TODO : here we shouldn't start the datanode services
-# since we plan to have dedicated nodes for this purpose
+#TODO : Do we only start namenode services on the master then 
+# start datanode services on dedicated nodes or we also use the master as a datanode as done currently ?
 
 for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do service $x start ; done
 for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do service $x start ; done
@@ -65,18 +65,3 @@ echo "resourcemgr ui: http://$ipaddress:50070"
 echo "node manager ui:http://$ipaddress:8042"
 echo "yarn resource manager ui:http://$ipaddress:8088"
 
-# Install Oozie shared Libs
-
-su hdfs -c "hadoop fs -mkdir -p /user/oozie"
-su hdfs -c "hadoop fs -chown oozie:oozie /user/oozie"
-su -c "oozie-setup sharelib create -fs hdfs://master.example.com:8020 -locallib /usr/lib/oozie/oozie-sharelib-yarn.tar.gz"
-
-# Start oozie server
-su -c "service oozie start" 
-#By default, Oozie server runs on port 11000 and its URL is http://<OOZIE_HOSTNAME>:11000/oozie
-
-#Set OOZIE_URL parameter
-export OOZIE_URL=http://localhost:11000/oozie
-
-echo "Handling over to ssh daemon..."
-/usr/sbin/sshd -D

@@ -11,7 +11,3 @@ ipaddress=`ifconfig eth0 | perl -n -e 'if (m/inet addr:([\d\.]+)/g) { print $1 }
 echo "slaveip: $ipaddress"
 echo "node manager ui:http://$ipaddress:8042"
 
-echo "Handling over to ssh daemon..."
-/usr/sbin/sshd -D
-
-
