@@ -33,8 +33,11 @@ ENV CATALINA_BASE /usr/lib/oozie/oozie-server
 # Copy oozie-site.xml to Oozie conf dir
 COPY shared/oozie-site.xml /etc/oozie/conf/
 
-# Set Oozie web console URL
+# Set Oozie URL
 ENV OOZIE_URL http://localhost:11000/oozie
+
+# Save OOZIE_URL in ~/.bashrc in order to simplify oozie command line usage
+RUN echo 'export OOZIE_URL=http://localhost:11000/oozie' >> ~/.bashrc
 
 # Configure Postgres to accept network connections for user oozie .
 RUN echo "host    oozie         oozie         0.0.0.0/0             md5" >> /etc/postgresql/9.1/main/pg_hba.conf

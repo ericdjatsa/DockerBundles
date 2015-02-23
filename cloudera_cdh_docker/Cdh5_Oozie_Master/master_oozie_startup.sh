@@ -14,10 +14,10 @@ su -c "oozie-setup sharelib create -fs $HADOOP_NAMENODE -locallib /usr/lib/oozie
 
 
 # Start postres database 
-# then start oozie server (NB : Should be done by the oozie user)
+# then start oozie server 
 mkdir /var/run/oozie
 chown -R oozie:oozie /var/run/oozie
-su postgres -c "/etc/init.d/postgresql start" && su oozie -c "service oozie start" 
+su postgres -c "/etc/init.d/postgresql start" && service oozie start
 #By default, Oozie server runs on port 11000 and its URL is http://<OOZIE_HOSTNAME>:11000/oozie
 
 echo "Oozie is now Ready to run your workflows !"
