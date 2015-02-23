@@ -37,4 +37,9 @@ RUN apt-get install -y openssh-server
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' |chpasswd
 
+# Solve error messages : 
+# bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8) 
+# See https://blogs.oracle.com/sakshijain/entry/the_problem_of_setting_locale
+RUN locale-gen en_US.UTF-8
+RUN dpkg-reconfigure locales
  

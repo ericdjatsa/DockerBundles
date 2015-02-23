@@ -26,4 +26,12 @@
 		</description>
 		<final>true</final>
 	</property>
+	<property>
+	      <name>fs.permissions.umask-mode</name>
+	      <value>002</value>
+	      <description> Everyone can read everything from all HDFS directories , 
+		Each user can only write to his user directory on HDFS ,
+		Group has write permissions on directories created by a user of the group
+	      </description>
+	</property>
 </configuration>

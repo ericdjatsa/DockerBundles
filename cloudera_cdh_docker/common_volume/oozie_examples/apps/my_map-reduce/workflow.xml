@@ -25,6 +25,10 @@
                 <delete path="${nameNode}/user/${wf:user()}/${examplesRoot}/output-data/${outputDir}"/>
             </prepare>
             <configuration>
+		<property>
+                    <name>mapred.reducer.class</name>
+                    <value>MapReduceGenerateReports.Reduce</value>
+                </property>
                 <property>
                     <name>mapred.job.queue.name</name>
                     <value>${queueName}</value>

@@ -4,7 +4,7 @@ FROM eric.djatsa/cdh5hadoopslave
 MAINTAINER Eric Djatsa , djatsaedy@gmail.com
 
 # Install oozie client
-RUN apt-get install -y -q --force-yes oozie-client
+RUN apt-get update && apt-get install -y -q --force-yes oozie-client
 
 # Copy oozie-site.xml to Oozie conf dir
 COPY shared/oozie-site.xml /etc/oozie/conf/

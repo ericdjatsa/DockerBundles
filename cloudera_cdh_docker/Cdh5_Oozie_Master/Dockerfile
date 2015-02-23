@@ -1,12 +1,15 @@
 FROM eric.djatsa/cdh5hadoopmaster
 
-# CONTAINER IMAGE tag will be : eric.djatsa/cdh5hadoopmaster_oozie
+# The parameter below will be used by my custom build script 
+# In order to automate the rebuild of all my docker images
+#IMAGE_BUILD_TAG=eric.djatsa/cdh5hadoopmaster_oozie
+
 MAINTAINER Eric Djatsa , djatsaedy@gmail.com
 
 # Install Oozie server and oozie client
 # Also install PostreSQL to be used as Oozie DB
 # Instructions here : http://www.cloudera.com/content/cloudera/en/documentation/core/v5-2-x/topics/cdh_ig_oozie_installation.html
-RUN apt-get install -y -q --force-yes \
+RUN apt-get update && apt-get install -y -q --force-yes \
 	oozie \
 	oozie-client \
 	postgresql=9.1+129ubuntu1 \

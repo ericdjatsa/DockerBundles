@@ -38,6 +38,16 @@
 	</description>
     </property>
     
+        <property>
+	<name>oozie.service.WorkflowAppService.system.libpath</name>
+	<value>/user/oozie/share/lib</value >
+	<description>
+		Oozie share libs directory on HDFS
+	</description>
+    </property>
+    
+    
+    
     <!-- Uber jars support -->
     <property>
         <name>oozie.action.mapreduce.uber.jar.enable</name>
