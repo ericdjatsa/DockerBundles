@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -q -y --force-yes \
 	inetutils-ping \
 	net-tools \
 	ruby \
+	sudo \
 	telnet \
 	unzip \
 	vim \
@@ -43,3 +44,6 @@ RUN echo 'root:root' |chpasswd
 RUN locale-gen en_US.UTF-8
 RUN dpkg-reconfigure locales
  
+# Finally handle over to ssh
+RUN echo 'Handling over to ssh ...'
+CMD /usr/sbin/sshd -D

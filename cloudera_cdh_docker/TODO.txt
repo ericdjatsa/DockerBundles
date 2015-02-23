@@ -19,3 +19,5 @@ root@master:~# su oozie -c "oozie  admin -shareliblist -oozie http://localhost:1
 [Available ShareLib]
 ==> Empty list , this is not normal
 
+TODO
+Install sudo in base image
