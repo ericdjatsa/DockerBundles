@@ -9,8 +9,8 @@ export HADOOP_NAMENODE="hdfs://master.example.com:8020"
 # Install Oozie shared Libs in HDFS
 
 su hdfs -c "hadoop fs -mkdir -p $HADOOP_NAMENODE/user/oozie"
-su hdfs -c "hadoop fs -chown oozie:oozie $HADOOP_NAMENODE/user/oozie"
 su -c "oozie-setup sharelib create -fs $HADOOP_NAMENODE -locallib /usr/lib/oozie/oozie-sharelib-yarn.tar.gz"
+su hdfs -c "hadoop fs -chown -R oozie:oozie $HADOOP_NAMENODE/user/oozie"
 
 
 # Start postres database 
