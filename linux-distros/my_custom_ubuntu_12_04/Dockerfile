@@ -10,7 +10,8 @@ ENV DEBIAN_FRONTEND noninteractive
 # See http://monkinetic.com/2014/07/25/docker-openstack-policy-rcd-mysqld
 RUN echo "#!/bin/sh" > /usr/sbin/policy-rc.d && echo "exit 0" >> /usr/sbin/policy-rc.d
 
-RUN apt-get update && apt-get install debconf-utils
+RUN apt-get update && apt-get install -q -y --force-yes apt-utils \
+				debconf-utils
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 

@@ -18,6 +18,14 @@ RUN apt-get update && apt-get install -y -q --force-yes \
 # Set a shell for the 'oozie' user so that he can execute commands
 RUN chsh -s /bin/sh oozie
 
+
+# allow oozie user to execute the following commands without passowrd : 
+	/usr/sbin/service start/stop oozie
+# TODO : do the same for Hive server + hive metastore
+
+shared/myvisudo.sh /etc/sudoers.d/oozie.sudo "oozie ALL=(ALL:ALL) NOPASSWD:/usr/sbin/service oozie start"
+shared/myvisudo.sh /etc/sudoers.d/oozie.sudo "oozie ALL=(ALL:ALL) NOPASSWD:/usr/sbin/service oozie stop"
+
 # Copy oozie db creation script
 COPY create_oozie_db.sql /opt/create_oozie_db.sql
 
