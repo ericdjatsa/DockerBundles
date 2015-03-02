@@ -1,4 +1,4 @@
-!# /usr/bin/env bash
+#! /usr/bin/env bash
 
 # References : 
 # [ 1 ] : http://stackoverflow.com/a/3706774

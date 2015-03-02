@@ -27,10 +27,12 @@ EXPOSE 7180 7183 7182 7432 50020 50070 50010 50075 8040 8042 47314 13562 8030 80
 
 EXPOSE 1004 1006 8020 50470 50090 50495 8485 8480 8032 8033 8088 8041 10020 19888 9160 9042 22
 
-COPY shared/proxy.sh /opt/docker_common_scripts/0_proxy.sh
+# The proxy.sh file is needed only if in your environment, you need to access to Internet through a proxy
+# In that case you will have to set the proper values in the proxy.sh file 
+#COPY shared/proxy.sh /opt/docker_common_scripts/0_proxy.sh
 COPY shared/nsupdate.sh /opt/docker_common_scripts/1_nsupdate.sh
 
-RUN chmod +x /opt/docker_common_scripts/0_proxy.sh
+#RUN chmod +x /opt/docker_common_scripts/0_proxy.sh
 RUN chmod +x /opt/docker_common_scripts/1_nsupdate.sh
 
 COPY slave_startup.sh /opt/startup/slave_startup.sh

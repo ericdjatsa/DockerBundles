@@ -16,6 +16,9 @@ alias mybackupetchosts='sudo cp /etc/hosts /etc/bkp_hosts_`date +"%d%b%Y_%Hh%M"`
 # Clean /etc/hosts : remove docker containers names and IP adresses eventually inserted with the command above
 alias mycleanetchosts='sudo sed -i -e "/.example.com/d" -e "/# Docker containers/d" /etc/hosts'
 
+# Remove stopped docker containers
+alias mydockerrm="docker ps -a | cut -d ' ' -f1 | tail -n +2 | xargs docker rm"
+
 
 # Print column names for docker info command
 function mydockerinfo_header () {

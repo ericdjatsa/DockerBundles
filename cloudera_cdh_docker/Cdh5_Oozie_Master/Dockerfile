@@ -18,13 +18,11 @@ RUN apt-get update && apt-get install -y -q --force-yes \
 # Set a shell for the 'oozie' user so that he can execute commands
 RUN chsh -s /bin/sh oozie
 
+# Add oozie user to hdfs group
+RUN usermod -aG hdfs oozie
 
-# allow oozie user to execute the following commands without passowrd : 
-	/usr/sbin/service start/stop oozie
-# TODO : do the same for Hive server + hive metastore
-
-shared/myvisudo.sh /etc/sudoers.d/oozie.sudo "oozie ALL=(ALL:ALL) NOPASSWD:/usr/sbin/service oozie start"
-shared/myvisudo.sh /etc/sudoers.d/oozie.sudo "oozie ALL=(ALL:ALL) NOPASSWD:/usr/sbin/service oozie stop"
+COPY shared/myvisudo.sh /opt/myvisudo.sh
+RUN chmod +x /opt/myvisudo.sh
 
 # Copy oozie db creation script
 COPY create_oozie_db.sql /opt/create_oozie_db.sql
@@ -63,7 +61,7 @@ RUN su postgres -c "pg_ctlcluster 9.1 main restart " &&  su oozie -c "/usr/lib/o
 # Configure Oozie webconsole ( copy web console libs ) 
 RUN mkdir -p /var/lib/oozie/
 COPY Libs/ext-2.2.zip /var/lib/oozie/
-RUN cd /var/lib/oozie && unzip /var/lib/oozie/ext-2.2.zip && chmod -R 1777 /var/lib/oozie
+RUN cd /var/lib/oozie && unzip -q /var/lib/oozie/ext-2.2.zip && chmod -R 1777 /var/lib/oozie
 
 #Set OOZIE_URL parameter
 #By default, Oozie server runs on port 11000 and its URL is http://<OOZIE_HOSTNAME>:11000/oozie
