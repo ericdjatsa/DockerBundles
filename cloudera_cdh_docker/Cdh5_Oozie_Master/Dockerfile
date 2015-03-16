@@ -34,9 +34,15 @@ RUN su postgres -c "/etc/init.d/postgresql start && psql -a -f /opt/create_oozie
 # Configure which hadoop version to use in Oozie ( Yarn or MR1 : in our case we use Yarn )
 RUN su -c " update-alternatives --set oozie-tomcat-conf /etc/oozie/tomcat-conf.http"
 
+# Perform oozie tomcat deployment
+## NB :  I added this step in order to get oozie sharelibs working, it was not present in the setup tutorial
+#RUN su -c "/usr/lib/oozie/tomcat-deployment.sh"
+RUN /bin/bash -c "source /usr/lib/oozie/tomcat-deployment.sh"
+
 # configure the Oozie server to work with YARN instead of default MRv1
 # see http://www.cloudera.com/content/cloudera/en/documentation/cdh4/v4-2-1/CDH4-Installation-Guide/cdh4ig_topic_17_6.html
-ENV CATALINA_BASE /usr/lib/oozie/oozie-server
+# CATALINA_BASE already set in previous script source /usr/lib/oozie/tomcat-deployment.sh
+#ENV CATALINA_BASE /usr/lib/oozie/oozie-server
 
 
 # Copy oozie-site.xml to Oozie conf dir
@@ -60,6 +66,7 @@ RUN su postgres -c "pg_ctlcluster 9.1 main restart " &&  su oozie -c "/usr/lib/o
 
 # Configure Oozie webconsole ( copy web console libs ) 
 RUN mkdir -p /var/lib/oozie/
+# Copy ExtJS libs ( previously downloaded from http://extjs.com/deploy/ext-2.2.zip ) - could also do this with wget
 COPY Libs/ext-2.2.zip /var/lib/oozie/
 RUN cd /var/lib/oozie && unzip -q /var/lib/oozie/ext-2.2.zip && chmod -R 1777 /var/lib/oozie
 

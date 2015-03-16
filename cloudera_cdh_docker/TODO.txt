@@ -21,3 +21,10 @@ root@master:~# su oozie -c "oozie  admin -shareliblist -oozie http://localhost:1
 
 TODO
 Install sudo in base image
+
+16 March 2015
+i
+oozie.war is empty : 
+/var/lib/oozie/tomcat-deployment/webapps/oozie.war
+root@master:~# ls -l /usr/lib/oozie/webapps/oozie.war 
+-rw-r--r-- 1 root root 0 Feb 24 20:58 /usr/lib/oozie/webapps/oozie.war
