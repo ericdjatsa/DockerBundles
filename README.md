@@ -1,0 +1,3 @@
+# DockerBundles
+This repository contains various dockerfiles for building local testing environments. 
+Eg : local Hadoop cluster, Spark cluster, Jenkins, etc ...
