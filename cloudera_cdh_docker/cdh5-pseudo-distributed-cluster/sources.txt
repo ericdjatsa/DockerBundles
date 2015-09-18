@@ -1,0 +1,2 @@
+[zookeeper] : https://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cdh_ig_zookeeper_package_install.html
+[oozie] : http://www.tecmint.com/install-apache-oozie-for-cdh-in-centos/
