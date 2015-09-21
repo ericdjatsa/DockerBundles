@@ -1,5 +1,23 @@
 #!/bin/bash
 
+# Start mysql service  
+# several Hadoop components require a relational DB as backend store, this is the reason why we first start the mysqld daemon before the Hadoop processes
+service mysql restart 
+
+# Assign priviledges to root user using the technique explained here : http://ubuntuforums.org/showthread.php?t=1836919 ( post #4)
+debian_sys_maint_passwd=`grep password /etc/mysql/debian.cnf  | head -n 1 | cut -d = -f2 | sed 's/[ \t]//'`
+
+mysql -u debian_sys_maint -p$debian_sys_maint_passwd  -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'root' WITH GRANT OPTION ; FLUSH PRIVILEGES;" mysql
+
+# Drop the empty user since it may cause errors as explained here : 
+# http://stackoverflow.com/questions/10299148/mysql-error-1045-28000-access-denied-for-user-billlocalhost-using-passw
+# mysql -u root -e "DROP USER ''@'localhost';" mysql
+mysql -u root -proot -e "UPDATE user SET Password=PASSWORD('root') where USER='root';" mysql
+mysql -u root -proot -e "FLUSH PRIVILEGES;" mysql
+
+# Now properly start the mysql service
+service mysql restart
+
 # Init and start zookeeper
 service zookeeper-server init
 service zookeeper-server start
@@ -26,25 +44,17 @@ sudo -u hdfs hadoop fs -chown hdfs /user/hive/warehouse
 
 sudo -u hdfs hadoop fs -chmod -R 1777 /user/hive/warehouse
 
-# Start mysql service in safe mode in order to initialize metastore
-mysqld --skip-grant-tables &
-mysql -u root -e "UPDATE user SET Password=PASSWORD('root') where USER='root';" mysql
-mysql -u root -e "FLUSH PRIVILEGES;" mysql
-/etc/init.d/mysql stop
-
-# Now properly start the mysql service
-sudo service mysql start
 
 # # init Hive metastore schema . NB : we also set a MySQL user account [ user : hive , pwd : hive ]  
-# for Hive to use to access the metastore
-mysql -u root -proot mysql < my_hive_metastore_init.sql
+# for Hive to access the metastore
+mysql -u root -proot mysql < /etc/hive/conf/my_hive_metastore_init.sql
 
 service hive-metastore start
 service hive-server2 start
 
 #create user directories
-sudo -u hdfs -hadoop fs -mkdir -p /user/root
-sudo -u hdfs hadoop fs -chown root /user/root
+sudo -u hdfs hadoop fs -mkdir -p /user/root
+sudo -u hdfs hadoop fs -chown root:root /user/root
 
 #init oozie
 sudo -u hdfs hadoop fs -mkdir /user/oozie

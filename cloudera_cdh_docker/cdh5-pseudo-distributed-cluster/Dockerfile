@@ -17,10 +17,10 @@ RUN wget http://archive.cloudera.com/cdh5/ubuntu/trusty/amd64/cdh/archive.key -O
     
     
 # Prepare installation of mysql-server
-echo mysql-server mysql-server/root_password select admin | debconf-set-selections
-echo mysql-server mysql-server/root_password_again select admin | debconf-set-selections
-echo mysql-server mysql-server/root_password seen true | debconf-set-selections
-echo mysql-server-5.0 mysql-server/root_password_again seen true | debconf-set-selections
+RUN echo mysql-server mysql-server/root_password select admin | debconf-set-selections
+RUN echo mysql-server mysql-server/root_password_again select admin | debconf-set-selections
+RUN echo mysql-server mysql-server/root_password seen true | debconf-set-selections
+RUN echo mysql-server-5.0 mysql-server/root_password_again seen true | debconf-set-selections
 
 #Install CDH package and dependencies
 RUN sudo apt-get install -y zookeeper-server && \
