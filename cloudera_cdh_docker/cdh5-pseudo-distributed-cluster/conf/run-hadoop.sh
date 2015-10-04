@@ -1,21 +1,6 @@
 #!/bin/bash
 
-# Start mysql service  
-# several Hadoop components require a relational DB as backend store, this is the reason why we first start the mysqld daemon before the Hadoop processes
-service mysql restart 
-
-# Assign priviledges to root user using the technique explained here : http://ubuntuforums.org/showthread.php?t=1836919 ( post #4)
-debian_sys_maint_passwd=`grep password /etc/mysql/debian.cnf  | head -n 1 | cut -d = -f2 | sed 's/[ \t]//'`
-
-mysql -u debian_sys_maint -p$debian_sys_maint_passwd  -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'root' WITH GRANT OPTION ; FLUSH PRIVILEGES;" mysql
-
-# Drop the empty user since it may cause errors as explained here : 
-# http://stackoverflow.com/questions/10299148/mysql-error-1045-28000-access-denied-for-user-billlocalhost-using-passw
-# mysql -u root -e "DROP USER ''@'localhost';" mysql
-mysql -u root -proot -e "UPDATE user SET Password=PASSWORD('root') where USER='root';" mysql
-mysql -u root -proot -e "FLUSH PRIVILEGES;" mysql
-
-# Now properly start the mysql service
+# Re-start the mysql service
 service mysql restart
 
 # Init and start zookeeper
@@ -47,7 +32,7 @@ sudo -u hdfs hadoop fs -chmod -R 1777 /user/hive/warehouse
 
 # # init Hive metastore schema . NB : we also set a MySQL user account [ user : hive , pwd : hive ]  
 # for Hive to access the metastore
-mysql -u root -proot mysql < /etc/hive/conf/my_hive_metastore_init.sql
+mysql -u root -padmin mysql < /etc/hive/conf/my_hive_metastore_init.sql
 
 service hive-metastore start
 service hive-server2 start

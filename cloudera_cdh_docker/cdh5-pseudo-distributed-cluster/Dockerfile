@@ -17,13 +17,17 @@ RUN wget http://archive.cloudera.com/cdh5/ubuntu/trusty/amd64/cdh/archive.key -O
     
     
 # Prepare installation of mysql-server
+## NB : VERY IMPORTANT : we set the password for [ root ] user to 'admin'
+# you should therefore use this password whenever you perform any operation with root user
+# on the mysql db . Example : when initializing hive metastore DB and Oozie DB
+ 
 RUN echo mysql-server mysql-server/root_password select admin | debconf-set-selections
 RUN echo mysql-server mysql-server/root_password_again select admin | debconf-set-selections
 RUN echo mysql-server mysql-server/root_password seen true | debconf-set-selections
-RUN echo mysql-server-5.0 mysql-server/root_password_again seen true | debconf-set-selections
+RUN echo mysql-server mysql-server/root_password_again seen true | debconf-set-selections
 
 #Install CDH package and dependencies
-RUN sudo apt-get install -y zookeeper-server && \
+RUN DEBIAN_FRONTEND=noninteractive sudo apt-get install -y zookeeper-server && \
     sudo apt-get install -y hadoop-conf-pseudo && \
     sudo apt-get install -y oozie && \
     sudo apt-get install -y python2.7 && \
