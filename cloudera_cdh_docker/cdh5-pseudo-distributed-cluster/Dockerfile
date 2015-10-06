@@ -37,7 +37,10 @@ RUN DEBIAN_FRONTEND=noninteractive sudo apt-get install -y zookeeper-server && \
     sudo apt-get install -y hive-metastore && \
     sudo apt-get install -y hive-server2 && \
     sudo apt-get install -y mysql-server && \
-    sudo apt-get install -y libmysql-java
+    sudo apt-get install -y libmysql-java && \
+    sudo apt-get install -y hive-hcatalog && \
+    sudo apt-get install -y hive-webhcat && \
+    sudo apt-get install -y hive-webhcat-server 
 
 # NB : there is an error in the official documentation. The file [ /usr/share/java/libmysql-java.jar ]  does not exists for 
 # ubuntu systems
@@ -47,10 +50,13 @@ RUN ln -s /usr/share/java/mysql-connector-java.jar /usr/lib/hive/lib/mysql-conne
 COPY conf/core-site.xml /etc/hadoop/conf/core-site.xml
 COPY conf/hdfs-site.xml /etc/hadoop/conf/hdfs-site.xml
 COPY conf/mapred-site.xml /etc/hadoop/conf/mapred-site.xml
-COPY conf/hive-site.xml /etc/hive/conf/hive-site.xml
-COPY conf/my_hive_metastore_init.sql /etc/hive/conf/my_hive_metastore_init.sql
 COPY conf/hadoop-env.sh /etc/hadoop/conf/hadoop-env.sh
 COPY conf/yarn-site.xml /etc/hadoop/conf/yarn-site.xml
+
+COPY conf/hive-site.xml /etc/hive/conf/hive-site.xml
+COPY conf/my_hive_metastore_init.sql /etc/hive/conf/my_hive_metastore_init.sql
+# Hcatalog env settings file
+COPY conf/webhcat-env.sh /etc/hive-webhcat/conf/webhcat-env.sh
 COPY conf/spark-defaults.conf /etc/spark/conf/spark-defaults.conf
 COPY conf/hue.ini /etc/hue/conf/hue.ini
 

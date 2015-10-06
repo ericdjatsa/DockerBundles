@@ -36,6 +36,7 @@ mysql -u root -padmin mysql < /etc/hive/conf/my_hive_metastore_init.sql
 
 service hive-metastore start
 service hive-server2 start
+service hive-webhcat-server start
 
 #create user directories
 sudo -u hdfs hadoop fs -mkdir -p /user/root
