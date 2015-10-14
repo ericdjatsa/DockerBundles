@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t eric.djatsa/cdh5-pseudo-distributed .
+docker build -t ericdjatsa/cdh5-pseudo-distributed .

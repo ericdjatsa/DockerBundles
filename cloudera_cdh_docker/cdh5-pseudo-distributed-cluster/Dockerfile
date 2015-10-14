@@ -1,5 +1,5 @@
 FROM nimmis/java:oracle-7-jdk
-MAINTAINER Martin Chalupa <chalimartines@gmail.com>
+MAINTAINER Eric Djatsa <eric.djatsa@outlook.com>
 
 #Base image doesn't start in root
 WORKDIR /
