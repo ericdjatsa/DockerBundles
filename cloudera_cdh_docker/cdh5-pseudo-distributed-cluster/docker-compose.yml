@@ -1,5 +1,5 @@
 cdh5pseudo:
-  image: eric.djatsa/cdh5-pseudo-distributed
+  image: ericdjatsa/cdh5-pseudo-distributed
   hostname: cdh5pseudo
   ports:
     - "8020:8020"
