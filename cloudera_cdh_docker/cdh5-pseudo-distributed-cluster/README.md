@@ -60,7 +60,7 @@ If you are Mac OS user with boot2docker and you would like to get from your loca
 
 
 ### UI entry points
-Those urls consider port forwarding from localhost.
+Those urls consider port forwarding from localhost. If you started your container as specified above using the parameters -p <container_port>:<host_port>, then you should be able to browse to these URLs from your host machine.
 
 * name node - http://localhost:50070
 * resource manager - http://localhost:8088
