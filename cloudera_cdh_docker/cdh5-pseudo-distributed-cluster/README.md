@@ -1,4 +1,4 @@
-# CDH 5 pseudo-distributed cluster Docker image ( Credits to chalimartines/cdh5-pseudo-distributed - https://github.com/chali/hadoop-cdh-pseudo-docker)
+#### CDH 5 pseudo-distributed cluster Docker image ( Credits to chalimartines/cdh5-pseudo-distributed - https://github.com/chali/hadoop-cdh-pseudo-docker)
 
 ##### Main changes from "chalimartines/cdh5-pseudo-distributed" : 
 - modified repository files to always use the latest version of CDH5
